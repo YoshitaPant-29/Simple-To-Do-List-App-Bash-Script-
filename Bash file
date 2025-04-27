@@ -1,0 +1,55 @@
+#echo "Hello World";
+#cat>hello.txt
+TASK_FILE="hello.txt"
+
+echo "--------- TO-DO LIST ---------"
+echo "1. View Tasks"
+echo "2. Add Task"
+echo "3. Delete Task"
+echo "4. Exit"
+echo "-------------------------------"
+read -p "Enter your choice [1-4]: " choice
+#!/bin/bash
+
+# Create the file if it doesn't exist
+if [ ! -f "$TASK_FILE" ]; then
+    touch "$TASK_FILE"
+fi
+
+while true
+do
+    echo "--------- TO-DO LIST ---------"
+    echo "1. View Tasks"
+    echo "2. Add Task"
+    echo "3. Delete Task"
+    echo "4. Exit"
+    echo "-------------------------------"
+    
+    read -p "Enter your choice [1-4]: " choice
+
+    case $choice in
+        1)
+            echo "Your Tasks:"
+            cat -n "$TASK_FILE"
+            ;;
+        2)
+            read -p "Enter your new task: " new_task
+            echo "$new_task" >> "$TASK_FILE"
+            echo "Task added successfully!"
+            ;;
+        3)
+            cat -n "$TASK_FILE"
+            read -p "Enter the task number to delete: " task_num
+            sed -i "${task_num}d" "$TASK_FILE"
+            echo "Task deleted successfully!"
+            ;;
+        4)
+            echo "Goodbye!"
+            exit 0
+            ;;
+        *)
+            echo "Invalid choice, please try again."
+            ;;
+    esac
+done
+
