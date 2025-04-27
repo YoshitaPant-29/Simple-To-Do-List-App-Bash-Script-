@@ -1,55 +1,53 @@
-#echo "Hello World";
-#cat>hello.txt
-TASK_FILE="hello.txt"
-
-echo "--------- TO-DO LIST ---------"
-echo "1. View Tasks"
-echo "2. Add Task"
-echo "3. Delete Task"
-echo "4. Exit"
-echo "-------------------------------"
-read -p "Enter your choice [1-4]: " choice
 #!/bin/bash
 
-# Create the file if it doesn't exist
-if [ ! -f "$TASK_FILE" ]; then
-    touch "$TASK_FILE"
-fi
+TASK_FILE="hello.txt"  # your task file
 
+# Color setup
+RED=$(tput setaf 1)
+GREEN=$(tput setaf 2)
+CYAN=$(tput setaf 6)
+RESET=$(tput sgr0)
+
+TASK_FILE="hello.txt"
+
+echo "${CYAN}Select an option:${RESET}"
+echo "1. View Tasks"
+echo "2. Add New Task"
+echo "3. Mark Task as Done"
+echo "4. Exit"
+echo "5. Sort Tasks"
+
+read -p "Enter your choice: " choice
 while true
 do
-    echo "--------- TO-DO LIST ---------"
-    echo "1. View Tasks"
-    echo "2. Add Task"
-    echo "3. Delete Task"
-    echo "4. Exit"
-    echo "-------------------------------"
     
-    read -p "Enter your choice [1-4]: " choice
-
-    case $choice in
-        1)
-            echo "Your Tasks:"
-            cat -n "$TASK_FILE"
-            ;;
-        2)
-            read -p "Enter your new task: " new_task
-            echo "$new_task" >> "$TASK_FILE"
-            echo "Task added successfully!"
-            ;;
-        3)
-            cat -n "$TASK_FILE"
-            read -p "Enter the task number to delete: " task_num
-            sed -i "${task_num}d" "$TASK_FILE"
-            echo "Task deleted successfully!"
-            ;;
-        4)
-            echo "Goodbye!"
-            exit 0
-            ;;
-        *)
-            echo "Invalid choice, please try again."
-            ;;
-    esac
+case $choice in
+    1)
+        echo "${CYAN}Your Tasks:${RESET}"
+        cat -n "$TASK_FILE"
+        ;;
+    2)
+        read -p "Enter your new task: " new_task
+        timestamp=$(date "+%d-%b-%Y %I:%M%p")
+        echo "$new_task [Added on: $timestamp]" >> "$TASK_FILE"
+        echo "${GREEN}Task added successfully!${RESET}"
+        ;;
+    3)
+        cat -n "$TASK_FILE"
+        read -p "Enter the task number to mark as done: " task_num
+        sed -i "${task_num}s/$/ [Done ✅]/" "$TASK_FILE"
+        echo "${GREEN}Task marked as done!${RESET}"
+        ;;
+    4)
+        echo "${CYAN}Goodbye!${RESET}"
+        exit 0
+        ;;
+    5)
+        sort "$TASK_FILE" -o "$TASK_FILE"
+        echo "${GREEN}Tasks sorted alphabetically!${RESET}"
+        ;;
+    *)
+        echo "${RED}Invalid choice, please try again.${RESET}"
+        ;;
+esac
 done
-
